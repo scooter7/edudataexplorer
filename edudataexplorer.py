@@ -42,6 +42,17 @@ def query_openai(prompt):
     )
     return response.choices[0].message["content"].strip()
 
+# Function to summarize data
+def summarize_data(data):
+    summary = []
+    if isinstance(data, list):
+        for entry in data[:10]:  # Limit to first 10 entries for brevity
+            summary.append(str(entry)[:1000])  # Limit each entry to 1000 characters
+    elif isinstance(data, dict):
+        for key, value in list(data.items())[:10]:  # Limit to first 10 key-value pairs for brevity
+            summary.append(f"{key}: {str(value)[:1000]}")  # Limit each value to 1000 characters
+    return "\n".join(summary)
+
 # Streamlit app interface
 st.title("Education Data Portal Conversational Interface")
 
@@ -75,7 +86,8 @@ if st.button("Submit Query"):
     else:
         if 'data' in st.session_state:
             data = st.session_state.data
-            prompt = f"Using the following data: {data}, answer this question: {user_query}"
+            summarized_data = summarize_data(data)
+            prompt = f"Using the following data: {summarized_data}, answer this question: {user_query}"
             response = query_openai(prompt)
             st.write(response)
         else:
