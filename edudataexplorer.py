@@ -32,12 +32,15 @@ def fetch_data(source, year=None):
 # Function to query OpenAI
 def query_openai(prompt):
     openai.api_key = st.secrets["openai"]["api_key"]
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
         max_tokens=150
     )
-    return response.choices[0].text.strip()
+    return response.choices[0].message["content"].strip()
 
 # Streamlit app interface
 st.title("Education Data Portal Conversational Interface")
