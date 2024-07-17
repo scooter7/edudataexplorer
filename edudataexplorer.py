@@ -2,9 +2,10 @@ import streamlit as st
 from urllib.request import urlopen
 from json import loads
 import openai
+from urllib.error import HTTPError
 
 # Function to fetch data from various sources
-@st.cache
+@st.cache_data
 def fetch_data(source, year=None):
     base_url = "https://educationdata.urban.org/api/v1/"
     if source == "IPEDS Directory":
@@ -17,9 +18,16 @@ def fetch_data(source, year=None):
     else:
         return None
     
-    response = urlopen(url)
-    data = loads(response.read())
-    return data
+    try:
+        response = urlopen(url)
+        data = loads(response.read())
+        return data
+    except HTTPError as e:
+        st.error(f"HTTP Error: {e.code} - {e.reason}")
+        return None
+    except Exception as e:
+        st.error(f"An error occurred: {str(e)}")
+        return None
 
 # Function to query OpenAI
 def query_openai(prompt):
@@ -51,7 +59,8 @@ if source.startswith("IPEDS"):
 
 if st.button("Fetch Data"):
     data = fetch_data(source, year)
-    st.write(data)
+    if data:
+        st.write(data)
 
 # Input field for user queries
 user_query = st.text_input("Ask something about the data:")
