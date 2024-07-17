@@ -7,13 +7,13 @@ from urllib.error import HTTPError
 # Function to fetch data from various sources
 @st.cache_data
 def fetch_data(source, year=None):
-    base_url = "https://educationdata.urban.org/api/v1/"
+    base_url = "https://educationdata.urban.org/api/v1/college-university/ipeds/"
     if source == "IPEDS Directory":
-        url = f"{base_url}college-university/ipeds/directory/{year}/"
+        url = f"{base_url}directory/{year}/"
     elif source == "IPEDS Institutional Characteristics":
-        url = f"{base_url}college-university/ipeds/institutional-characteristics/{year}/"
+        url = f"{base_url}institutional-characteristics/{year}/"
     elif source == "IPEDS Admissions":
-        url = f"{base_url}college-university/ipeds/admissions/{year}/"
+        url = f"{base_url}admissions/{year}/"
     # Add more endpoints as required
     else:
         return None
