@@ -60,6 +60,7 @@ if source.startswith("IPEDS"):
 if st.button("Fetch Data"):
     data = fetch_data(source, year)
     if data:
+        st.session_state.data = data
         st.write(data)
 
 # Input field for user queries
@@ -69,6 +70,10 @@ if st.button("Submit Query"):
     if not user_query:
         st.error("Please enter a query.")
     else:
-        prompt = f"Using the following data: {data}, answer this question: {user_query}"
-        response = query_openai(prompt)
-        st.write(response)
+        if 'data' in st.session_state:
+            data = st.session_state.data
+            prompt = f"Using the following data: {data}, answer this question: {user_query}"
+            response = query_openai(prompt)
+            st.write(response)
+        else:
+            st.error("No data available. Please fetch data first.")
